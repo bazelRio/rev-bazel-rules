@@ -1,0 +1,13 @@
+diff --git a/rev/CANDigitalInput.h b/rev/CANDigitalInput.h
+index 5f4508c..385a32f 100644
+--- a/rev/CANDigitalInput.h
++++ b/rev/CANDigitalInput.h
+@@ -38,7 +38,7 @@ class CANSparkMax;
+ 
+ class CANDigitalInput {
+ public:
+-    WPI_DEPRECATED("The LimitSwitch enum is only used for deprecated functions")
++    // WPI_DEPRECATED("The LimitSwitch enum is only used for deprecated functions")
+     enum class LimitSwitch { kForward, kReverse };
+     enum class LimitSwitchPolarity { kNormallyOpen = 0, kNormallyClosed = 1 };
+ 

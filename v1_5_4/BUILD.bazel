@@ -1,0 +1,89 @@
+
+load("@rules_java//java:defs.bzl", "java_library")
+load("@wpi_bazel_rules//rules:cc.bzl",  "wpilib_cc_library")
+load("@wpi_bazel_rules//rules:wpilib_repo.bzl", "make_cpp_alias", "make_jni_alias")
+
+package(default_visibility = ["//visibility:public"])
+
+make_cpp_alias(name = "rev-SparkMax-cpp")
+
+make_cpp_alias(name = "rev-SparkMax-driver")
+
+alias(
+    name = "SparkMax-java",
+    actual = "@maven//:com_revrobotics_frc_SparkMax_java",
+)
+
+
+make_jni_alias(name = "rev-java-native__com_revrobotics_frc__SparkMax_driver")
+
+
+alias(
+    name = "SparkMax-driverjni",
+    actual = ":rev-java-native__com_revrobotics_frc__SparkMax_driver-jni-lib",
+)
+
+
+wpilib_cc_library(
+    name = "SparkMax-cpp",
+    raw_deps = [
+        "@rev-SparkMax-cpp-headers//:headers",
+        ":rev-SparkMax-cpp-libs",
+    ],
+    linkstatic=1,
+)
+
+wpilib_cc_library(
+    name = "SparkMax-driver",
+    raw_deps = [
+        "@rev-SparkMax-driver-headers//:headers",
+        ":rev-SparkMax-driver-libs",
+    ],
+    linkstatic=1,
+)
+wpilib_cc_library(
+    name = "rev-cpp",
+    raw_deps = select({
+        "@bazel_tools//src/conditions:windows": [
+            ":SparkMax-cpp",
+            ":SparkMax-driver",
+        ],
+        "@bazel_tools//src/conditions:linux_x86_64": [
+            ":SparkMax-cpp",
+            ":SparkMax-driver",
+        ],
+        "@wpi_bazel_rules//toolchains/conditions:roborio": [
+            ":SparkMax-cpp",
+            ":SparkMax-driver",
+        ],
+        "@bazel_tools//src/conditions:darwin": [
+            ":SparkMax-cpp",
+            ":SparkMax-driver",
+        ],
+    }),
+)
+
+java_library(
+    name = "rev-java",
+    exports = [
+        ":SparkMax-java",
+    ],
+)
+
+filegroup(
+    name = "jni_deps",
+    srcs = select({
+        "@bazel_tools//src/conditions:windows": [
+            ":rev-java-native__com_revrobotics_frc__SparkMax_driver-jni-lib",
+        ],
+        "@bazel_tools//src/conditions:linux_x86_64": [
+            ":rev-java-native__com_revrobotics_frc__SparkMax_driver-jni-lib",
+        ],
+        "@wpi_bazel_rules//toolchains/conditions:roborio": [
+            ":rev-java-native__com_revrobotics_frc__SparkMax_driver-jni-lib",
+        ],
+        "@bazel_tools//src/conditions:darwin": [
+            ":rev-java-native__com_revrobotics_frc__SparkMax_driver-jni-lib",
+        ],
+    }),
+)
