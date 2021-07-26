@@ -1,6 +1,5 @@
-
 load("@rules_java//java:defs.bzl", "java_library")
-load("@wpi_bazel_rules//rules:cc.bzl",  "wpilib_cc_library")
+load("@wpi_bazel_rules//rules:cc.bzl", "wpilib_cc_library")
 load("@wpi_bazel_rules//rules:wpilib_repo.bzl", "make_cpp_alias", "make_jni_alias")
 
 package(default_visibility = ["//visibility:public"])
@@ -11,36 +10,34 @@ make_cpp_alias(name = "rev-SparkMax-driver")
 
 alias(
     name = "SparkMax-java",
-    actual = "@maven//:com_revrobotics_frc_SparkMax_java",
+    actual = "@rev-SparkMax-java//jar",
 )
 
-
 make_jni_alias(name = "rev-java-native__com_revrobotics_frc__SparkMax_driver")
-
 
 alias(
     name = "SparkMax-driverjni",
     actual = ":rev-java-native__com_revrobotics_frc__SparkMax_driver-jni-lib",
 )
 
-
 wpilib_cc_library(
     name = "SparkMax-cpp",
+    linkstatic = 1,
     raw_deps = [
         "@rev-SparkMax-cpp-headers//:headers",
         ":rev-SparkMax-cpp-libs",
     ],
-    linkstatic=1,
 )
 
 wpilib_cc_library(
     name = "SparkMax-driver",
+    linkstatic = 1,
     raw_deps = [
         "@rev-SparkMax-driver-headers//:headers",
         ":rev-SparkMax-driver-libs",
     ],
-    linkstatic=1,
 )
+
 wpilib_cc_library(
     name = "rev-cpp",
     raw_deps = select({

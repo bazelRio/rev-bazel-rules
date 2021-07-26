@@ -3,19 +3,29 @@ Auto-generated rules for rev
 """
 
 load("@wpi_bazel_rules//rules:wpilib_repo.bzl", "wpilib_java_vendor_library", "wpilib_native_dependency")
+load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 
 def third_party_rev():
     __third_party_rev_native()
     return __third_party_rev_java()
 
 def __third_party_rev_java():
-    artifacts = [
-        "com.revrobotics.frc:SparkMax-java:1.5.4",
-    ]
+    repository_url = "https://www.revrobotics.com/content/sw/max/sdk/maven"
 
-    repositories = ["https://www.revrobotics.com/content/sw/max/sdk/maven"]
+    deps = []
+    deps.append(("rev-SparkMax-java", "com.revrobotics.frc:SparkMax-java:1.5.4", "223945424413414a207b1cab295ee20d88bd9fbde87ceed0c2b258188984070f"))
 
-    return artifacts, repositories
+    for name, artifact, sha in deps:
+        jvm_maven_import_external(
+            name = name,
+            artifact = artifact,
+            artifact_sha256 = sha,
+            server_urls = [repository_url],
+        )
+
+    artifacts = []
+
+    return artifacts, []
 
 def __third_party_rev_native():
     wpilib_native_dependency(

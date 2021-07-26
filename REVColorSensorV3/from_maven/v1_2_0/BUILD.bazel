@@ -1,0 +1,43 @@
+load("@rules_java//java:defs.bzl", "java_library")
+load("@wpi_bazel_rules//rules:cc.bzl", "wpilib_cc_library")
+load("@wpi_bazel_rules//rules:wpilib_repo.bzl", "make_cpp_alias")
+
+package(default_visibility = ["//visibility:public"])
+
+make_cpp_alias(name = "rev_color_sensor-ColorSensorV3-cpp")
+
+alias(
+    name = "ColorSensorV3-java",
+    actual = "@rev_color_sensor-ColorSensorV3-java//jar",
+)
+
+wpilib_cc_library(
+    name = "ColorSensorV3-cpp",
+    linkstatic = 1,
+    raw_deps = [
+        "@rev_color_sensor-ColorSensorV3-cpp-headers//:headers",
+        ":rev_color_sensor-ColorSensorV3-cpp-libs",
+    ],
+)
+
+wpilib_cc_library(
+    name = "rev_color_sensor-cpp",
+    raw_deps = select({
+        "@bazel_tools//src/conditions:windows": [
+            ":ColorSensorV3-cpp",
+        ],
+        "@bazel_tools//src/conditions:linux_x86_64": [
+            ":ColorSensorV3-cpp",
+        ],
+        "@wpi_bazel_rules//toolchains/conditions:roborio": [
+            ":ColorSensorV3-cpp",
+        ],
+    }),
+)
+
+java_library(
+    name = "rev_color_sensor-java",
+    exports = [
+        ":ColorSensorV3-java",
+    ],
+)
